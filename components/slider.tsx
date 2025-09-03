@@ -8,7 +8,7 @@ import { designs } from "@/app/lib/designs";
 
 export default function Slider() {
   const router = useRouter();
-  const [index, setIndex] = useState<number>(1);
+  const [index, setIndex] = useState<number>(0);
   const size = designs.length;
 
   const ahead = () => {
