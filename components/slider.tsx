@@ -40,7 +40,9 @@ export default function Slider() {
           <Tooltip text="⭐ Give star on GitHub" side="left">
             <button
               className="hover:scale-130 transition-transform bg-amber-50 p-2 rounded-full"
-              onClick={() => router.push("https://github.com")}
+              onClick={() =>
+                router.push("https://github.com/IamSiddharthChoudhary/Bg.com")
+              }
             >
               <Github color="black" />
             </button>
