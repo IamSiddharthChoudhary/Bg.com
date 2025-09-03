@@ -11,6 +11,11 @@ export default function GodRaysComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const materialRef = useRef<THREE.ShaderMaterial | null>(null);
+  const animationIdRef = useRef<number | null>(null);
+
   const [rayIntensity, setRayIntensity] = useState(1.0);
   const [animationSpeed, setAnimationSpeed] = useState(1.0);
   const [rayCount, setRayCount] = useState(12);
@@ -60,41 +65,112 @@ export default function GodRaysComponent() {
     const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), godRaysMaterial);
     scene.add(quad);
 
+    sceneRef.current = scene;
+    rendererRef.current = renderer;
+    materialRef.current = godRaysMaterial;
+
     let frame = 0;
     const animate = () => {
       frame++;
-      godRaysMaterial.uniforms.iTime.value = frame * 0.01;
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
+      if (materialRef.current) {
+        materialRef.current.uniforms.iTime.value = frame * 0.01;
+      }
+      if (rendererRef.current && sceneRef.current) {
+        rendererRef.current.render(sceneRef.current, camera);
+      }
+      animationIdRef.current = requestAnimationFrame(animate);
     };
 
     animate();
 
     const handleResize = () => {
-      if (!canvasRef.current) return;
+      if (!canvasRef.current || !rendererRef.current || !materialRef.current)
+        return;
       const rect = canvasRef.current.getBoundingClientRect();
-      renderer.setSize(rect.width, rect.height);
-      godRaysMaterial.uniforms.iResolution.value.set(rect.width, rect.height);
+      rendererRef.current.setSize(rect.width, rect.height);
+      materialRef.current.uniforms.iResolution.value.set(
+        rect.width,
+        rect.height
+      );
     };
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      renderer.dispose();
-      godRaysMaterial.dispose();
-      if (canvasRef.current) canvasRef.current.innerHTML = "";
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+      }
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
+      }
+      if (materialRef.current) {
+        materialRef.current.dispose();
+      }
+      if (canvasRef.current) {
+        canvasRef.current.innerHTML = "";
+      }
     };
-  }, [
-    rayIntensity,
-    animationSpeed,
-    rayCount,
-    lightRadius,
-    backgroundColor1,
-    backgroundColor2,
-    rayColor,
-    cloudDensity,
-  ]);
+  }, []);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uRayIntensity.value = rayIntensity;
+    }
+  }, [rayIntensity]);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uAnimationSpeed.value = animationSpeed;
+    }
+  }, [animationSpeed]);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uRayCount.value = rayCount;
+    }
+  }, [rayCount]);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uLightRadius.value = lightRadius;
+    }
+  }, [lightRadius]);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      const [bgR1, bgG1, bgB1] = hexToRgb(backgroundColor1);
+      materialRef.current.uniforms.uBackgroundColor1.value.set(
+        bgR1,
+        bgG1,
+        bgB1
+      );
+    }
+  }, [backgroundColor1]);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      const [bgR2, bgG2, bgB2] = hexToRgb(backgroundColor2);
+      materialRef.current.uniforms.uBackgroundColor2.value.set(
+        bgR2,
+        bgG2,
+        bgB2
+      );
+    }
+  }, [backgroundColor2]);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      const [rayR, rayG, rayB] = hexToRgb(rayColor);
+      materialRef.current.uniforms.uRayColor.value.set(rayR, rayG, rayB);
+    }
+  }, [rayColor]);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uCloudDensity.value = cloudDensity;
+    }
+  }, [cloudDensity]);
 
   const states: GodRaysArgs = {
     rayIntensity,
