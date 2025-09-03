@@ -359,7 +359,7 @@ export default function Controls<I extends keyof TypeArr & number>({
       </div>
       {showCodeModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[100]">
-          <div className="bg-gray-900 border border-gray-600 rounded-xl shadow-2xl w-[75vw] h-[75vh] p-6 relative">
+          <div className="bg-gray-900 border border-gray-600 rounded-xl shadow-2xl w-[80vw] h-[80vh] p-6 relative">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-white">Export Code</h2>
               <button
@@ -369,63 +369,136 @@ export default function Controls<I extends keyof TypeArr & number>({
                 <X size={20} />
               </button>
             </div>
-            <div className="flex flex-col bg-gray-800 rounded-lg p-4 h-[calc(100%-4rem)] overflow-auto">
-              <h1 className="text-white">Step 1</h1>
-              <div className="m-5 flex justify-between items-center bg-black w-3xl p-5 h-fit rounded-2xl text-amber-50">
-                <p className="">npm i three @types/three</p>
-                <button
-                  className={`hover:scale-110 transition-transform ${
-                    copied1 ? "text-green-500" : ""
-                  }`}
-                  onClick={() => copyToClipboard("npm i three @types/three", 1)}
-                  disabled={isBusyS1}
-                >
-                  {copied1 ? (
-                    <Check className="duration-500 ease-in-out" />
-                  ) : (
-                    <Copy className="duration-500 ease-in-out" />
-                  )}
-                </button>
-              </div>
-
-              <h1 className="text-white">Step 2</h1>
-              <div className="m-5 flex justify-between items-center bg-black w-3xl p-5 h-fit rounded-2xl text-amber-50">
-                <p className="italic">Component Code...</p>
-                <button
-                  className={`hover:scale-110 transition-transform ${
-                    copied2 ? "text-green-500" : ""
-                  }`}
-                  onClick={() => copyToClipboard(getCode() || "", 2)}
-                  disabled={isBusyS2}
-                >
-                  {copied2 ? (
-                    <Check className="duration-500 ease-in-out" />
-                  ) : (
-                    <Copy className="duration-500 ease-in-out" />
-                  )}
-                </button>
-              </div>
-
-              <h1 className="text-white">Step 3</h1>
-              <div className="m-5 flex justify-between items-center bg-black w-3xl p-5 h-fit rounded-2xl text-amber-50">
-                <div className="flex">
-                  {`<`}
-                  <div className="text-blue-800">BgComponent</div>
-                  {`/>`}
+            <div className="flex flex-col bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 h-[calc(100%-4rem)] overflow-auto shadow-2xl">
+              <div className="mb-8">
+                <div className="flex items-center mb-4">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                    1
+                  </div>
+                  <h2 className="text-xl font-semibold text-white">
+                    Install Dependencies
+                  </h2>
                 </div>
-                <button
-                  className={`hover:scale-110 transition-transform ${
-                    copied3 ? "text-green-500" : ""
-                  }`}
-                  onClick={() => copyToClipboard("<BgComponent/>", 3)}
-                  disabled={isBusyS3}
-                >
-                  {copied3 ? (
-                    <Check className="duration-500 ease-in-out" />
-                  ) : (
-                    <Copy className="duration-500 ease-in-out" />
-                  )}
-                </button>
+                <div className="ml-11 bg-gray-950 rounded-xl p-4 border border-gray-700 hover:border-gray-600 transition-colors">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <span className="text-gray-400 text-sm mr-3">$</span>
+                      <code className="text-green-400 font-mono text-sm">
+                        npm i three @types/three
+                      </code>
+                    </div>
+                    <button
+                      className={`p-2 rounded-lg transition-all duration-200 hover:scale-110 hover:bg-gray-800 ${
+                        copied1
+                          ? "text-green-400 bg-green-400/10"
+                          : "text-gray-400 hover:text-white"
+                      }`}
+                      onClick={() =>
+                        copyToClipboard("npm i three @types/three", 1)
+                      }
+                      disabled={isBusyS1}
+                      aria-label="Copy npm install command"
+                    >
+                      {copied1 ? (
+                        <Check
+                          size={18}
+                          className="transition-all duration-300"
+                        />
+                      ) : (
+                        <Copy
+                          size={18}
+                          className="transition-all duration-300"
+                        />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="mb-8">
+                <div className="flex items-center mb-4">
+                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                    2
+                  </div>
+                  <h2 className="text-xl font-semibold text-white">
+                    Component Code
+                  </h2>
+                </div>
+                <div className="ml-11 bg-gray-950 rounded-xl p-4 border border-gray-700 hover:border-gray-600 transition-colors">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <span className="text-blue-400 mr-2">📄</span>
+                      <span className="text-gray-300 text-sm italic">
+                        React component with Three.js setup
+                      </span>
+                    </div>
+                    <button
+                      className={`p-2 rounded-lg transition-all duration-200 hover:scale-110 hover:bg-gray-800 ${
+                        copied2
+                          ? "text-green-400 bg-green-400/10"
+                          : "text-gray-400 hover:text-white"
+                      }`}
+                      onClick={() => copyToClipboard(getCode() || "", 2)}
+                      disabled={isBusyS2}
+                      aria-label="Copy component code"
+                    >
+                      {copied2 ? (
+                        <Check
+                          size={18}
+                          className="transition-all duration-300"
+                        />
+                      ) : (
+                        <Copy
+                          size={18}
+                          className="transition-all duration-300"
+                        />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <div className="flex items-center mb-4">
+                  <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                    3
+                  </div>
+                  <h2 className="text-xl font-semibold text-white">Usage</h2>
+                </div>
+                <div className="ml-11 bg-gray-950 rounded-xl p-4 border border-gray-700 hover:border-gray-600 transition-colors">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <span className="text-gray-400 mr-2">&lt;</span>
+                      <span className="text-blue-400 font-mono">
+                        BgComponent
+                      </span>
+                      <span className="text-gray-400">/&gt;</span>
+                    </div>
+                    <button
+                      className={`p-2 rounded-lg transition-all duration-200 hover:scale-110 hover:bg-gray-800 ${
+                        copied3
+                          ? "text-green-400 bg-green-400/10"
+                          : "text-gray-400 hover:text-white"
+                      }`}
+                      onClick={() => copyToClipboard("<BgComponent/>", 3)}
+                      disabled={isBusyS3}
+                      aria-label="Copy component usage"
+                    >
+                      {copied3 ? (
+                        <Check
+                          size={18}
+                          className="transition-all duration-300"
+                        />
+                      ) : (
+                        <Copy
+                          size={18}
+                          className="transition-all duration-300"
+                        />
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
